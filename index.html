@@ -1,0 +1,1539 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guggiarom — AI, dati e business technology</title>
+<meta name="description" content="Guggiarom unisce AI, data platform e business technology per trasformare idee complesse in prodotti e sistemi concreti.">
+<meta name="author" content="Guggiarom">
+<meta name="application-name" content="Guggiarom">
+<meta name="theme-color" content="#04070a">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://guggiarom.it/">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="/site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta property="og:site_name" content="Guggiarom">
+<meta property="og:title" content="Guggiarom — AI, dati e business technology">
+<meta property="og:description" content="AI, data platform e business technology per trasformare idee complesse in prodotti e sistemi concreti.">
+<meta property="og:url" content="https://guggiarom.it/">
+<meta property="og:image" content="https://guggiarom.it/social-preview.png">
+<meta property="og:image:secure_url" content="https://guggiarom.it/social-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Guggiarom, AI, data platform e business technology">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Guggiarom — AI, dati e business technology">
+<meta name="twitter:description" content="AI, data platform e business technology per trasformare idee complesse in prodotti e sistemi concreti.">
+<meta name="twitter:image" content="https://guggiarom.it/social-preview.png">
+<meta name="twitter:image:alt" content="Guggiarom, AI, data platform e business technology">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Guggiarom",
+  "url": "https://guggiarom.it/",
+  "logo": "https://guggiarom.it/apple-touch-icon.png",
+  "email": "mailto:martino@guggiarom.it",
+  "description": "AI, data platform e business technology per trasformare idee complesse in prodotti e sistemi concreti.",
+  "founder": [
+    {"@type": "Person", "name": "Andrea Romeo", "sameAs": "https://www.linkedin.com/in/andrea-romeo-aa4b17223/"},
+    {"@type": "Person", "name": "Martino Guggiari", "sameAs": "https://www.linkedin.com/in/martinoguggiari/"}
+  ],
+  "sameAs": [
+    "https://www.linkedin.com/in/andrea-romeo-aa4b17223/",
+    "https://www.linkedin.com/in/martinoguggiari/"
+  ]
+}
+</script>
+<style>
+  :root{
+    /* fosfori: ciano freddo per il vetro, la faccia frontale e' il punto piu' caldo */
+    --bg:#04070a;
+    --face:#f2fffc;   /* faccia frontale    █ */
+    --lit:#6ff0dc;    /* parete in luce     ▓ */
+    --mid:#2fa79f;    /* parete di scorcio  ▒ */
+    --dark:#16605f;   /* parete in ombra    ▒ */
+    /* Il tono spento dell'INTERFACCIA. Prima menu, kicker, invito e footer
+       usavano --dark, che pero' e' il colore dell'ombra del solido: nato per
+       essere quasi nero, perche' li' serve a far sprofondare una faccia. Su
+       testo di 10px diventava illeggibile — nero su nero. Sono due mestieri
+       diversi e ora sono due variabili diverse.
+
+       Il valore e' alto perche' il testo dell'interfaccia va letto ATTRAVERSO
+       tre strati che lo scuriscono: le scanline in multiply, la maschera a
+       fosfori e soprattutto la vignettatura, che e' massima proprio ai bordi —
+       cioe' dove sta il menu. Il contrasto nominale su fondo nero non e' quello
+       che si vede: quello che arriva all'occhio e' molto meno. */
+    --dim:#8fe4d8;
+    --back:#0a2e33;   /* faccia posteriore  ░ */
+    --glow:#25f0d8;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  }
+  body{
+    margin:0;
+    min-height:100%;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% 45%, #0b1a1e 0%, var(--bg) 62%, #000 100%)
+      fixed;
+    overflow-x:hidden;
+    cursor:crosshair;
+  }
+
+  .hero{
+    height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+
+  /* Lo scorrimento lo fa il browser, non un'animazione scritta a mano: una riga
+     di CSS, e i link del menu ci passano dentro da soli. Chi ha chiesto meno
+     movimento salta direttamente a destinazione. */
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  /* il menu e' fisso: le sezioni devono fermarsi sotto, non sparirci dietro */
+  .portrait,.contact{scroll-margin-top:76px}
+
+  /* ---------- menu ---------- */
+  .nav{
+    /* z-index 2: sopra alle sezioni (che stanno a 1) e sotto al vetro CRT (3).
+       A pari livello con le sezioni vinceva l'ordine nel DOM, e scorrendo il
+       menu finiva sotto a .portrait e .contact: si vedeva ma non si cliccava. */
+    position:fixed;top:0;left:0;right:0;z-index:2;
+    display:flex;align-items:center;gap:20px;
+    padding:18px clamp(18px, 4vw, 34px);
+    font-family:var(--mono);
+    font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;
+    /* niente barra opaca: solo un velo che sfuma, cosi' il monitor resta una
+       superficie sola e il menu ci galleggia sopra invece di tagliarla in due */
+    background:linear-gradient(to bottom, rgba(4,7,10,.72), rgba(4,7,10,0));
+  }
+  /* Nella hero la scritta gigante e' gia' il marchio: ripeterlo in alto sarebbe
+     dirlo due volte. Compare solo quando la scritta e' uscita dallo schermo. */
+  .nav .brand{
+    color:var(--lit);text-decoration:none;
+    text-shadow:0 0 .5em rgba(37,240,216,.45);
+    opacity:0;pointer-events:none;
+    transition:opacity .4s ease;
+  }
+  .nav.past .brand{opacity:.85;pointer-events:auto}
+  .nav .links{display:flex;gap:clamp(16px, 3vw, 30px);margin-left:auto}
+  .nav .lnk{
+    color:var(--dim);text-decoration:none;
+    /* stesso alone del resto della pagina. Non e' decorazione: allarga il tratto
+       di mezzo pixel e cosi' la lettera sopravvive alle scanline, che a 10px
+       cancellano una riga di glifo su due */
+    text-shadow:0 0 .5em rgba(37,240,216,.45);
+    padding:5px 0;
+    border-bottom:1px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  .nav .lnk:hover{color:var(--lit)}
+  /* la voce della sezione che si sta guardando si accende da sola */
+  .nav .lnk.on{color:var(--face);border-bottom-color:rgba(87,226,207,.45)}
+
+  /* ---------- invito a scorrere ---------- */
+  .cue{
+    position:absolute;left:50%;bottom:3.4vh;
+    transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.38em;text-transform:uppercase;
+    color:var(--dim);
+    text-shadow:0 0 .5em rgba(37,240,216,.45);
+    text-decoration:none;
+    transition:opacity .45s ease, color .2s;
+  }
+  .cue:hover{color:var(--lit)}
+  .cue span{padding-left:.38em}   /* la spaziatura finale scentra il testo */
+  .cue .rail{
+    position:relative;width:1px;height:58px;
+    background:linear-gradient(to bottom, rgba(87,226,207,.26), rgba(87,226,207,0));
+    overflow:hidden;
+  }
+  /* Una scintilla che scende lungo il filo. Dice "giu'" molto meglio di una
+     freccia ferma: e' il movimento a indicare la direzione, non il simbolo. */
+  .cue .rail::after{
+    content:"";position:absolute;left:0;top:0;
+    width:1px;height:16px;
+    background:linear-gradient(to bottom, transparent, var(--glow));
+    animation:fall 1.9s cubic-bezier(.4,0,.5,1) infinite;
+  }
+  @keyframes fall{
+    0%   {transform:translateY(-18px);opacity:0}
+    20%  {opacity:1}
+    76%  {opacity:1}
+    100% {transform:translateY(58px);opacity:0}
+  }
+  /* alla prima rotella l'invito ha fatto il suo lavoro e si toglie di mezzo */
+  .cue.gone{opacity:0;pointer-events:none}
+
+  @keyframes breathe{50%{opacity:.4}}
+
+  @media (max-width:520px){
+    .nav{font-size:9.5px;letter-spacing:.22em}
+    .nav .brand{display:none}
+  }
+
+  /* ---------- il render ---------- */
+  #screen{
+    margin:0;
+    font-family:var(--mono);
+    white-space:pre;
+    line-height:1;
+    letter-spacing:0;
+    color:var(--face);
+    user-select:none;
+    /* aberrazione cromatica + bloom di fosforo */
+    text-shadow:
+      -0.06em 0 rgba(255,42,140,.42),
+       0.06em 0 rgba(0,220,255,.38),
+       0 0 .35em var(--glow);
+    animation: flicker 5.5s infinite steps(1);
+  }
+  #screen .l{color:var(--lit)}
+  #screen .m{color:var(--mid)}
+  #screen .d{color:var(--dark)}
+  #screen .k{color:var(--back)}
+
+  /* impercettibile instabilita' di alimentazione */
+  @keyframes flicker{
+    0%,96%  {opacity:1}
+    96.5%   {opacity:.86}
+    97%     {opacity:1}
+    98.2%   {opacity:.92}
+    98.6%   {opacity:1}
+  }
+
+  /* ---------- vetro del monitor ---------- */
+  .crt{position:fixed;inset:0;pointer-events:none;z-index:3}
+
+  /* scanline fisse */
+  .crt.lines{
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0)   0px,
+      rgba(0,0,0,0)   2px,
+      rgba(0,0,0,.28) 3px,
+      rgba(0,0,0,.28) 4px);
+    mix-blend-mode:multiply;
+  }
+
+  /* maschera a fosfori: sottilissime bande verticali RGB */
+  .crt.mask{
+    background:repeating-linear-gradient(
+      to right,
+      rgba(255,0,90,.05)  0px,
+      rgba(0,255,220,.05) 1px,
+      rgba(0,120,255,.05) 2px,
+      rgba(0,0,0,0)       3px);
+  }
+
+  /* vignettatura + curvatura del tubo */
+  .crt.glass{
+    background:
+      radial-gradient(ellipse 84% 68% at 50% 46%,
+        rgba(0,0,0,0) 58%, rgba(0,0,0,.42) 88%, rgba(0,0,0,.78) 100%);
+    /* Era 14vh a .85: la fascia scura arrivava fin dentro al menu e se lo
+       mangiava. La curvatura del tubo si legge lo stesso con meno. */
+    box-shadow: inset 0 0 9vh rgba(0,0,0,.7);
+  }
+
+  /* ---------- ritratto: foto con l'ascii sotto vetro ---------- */
+  .portrait{
+    position:relative;z-index:1;      /* sotto al menu e al vetro CRT */
+    padding:6vh 28px 2vh;
+  }
+  /* Una scheda per persona: ritratto a sinistra, nome di fianco. La riga e'
+     centrata nella pagina ma il contenuto e' allineato a sinistra — e' una
+     scheda, non un manifesto. Le schede sono impilate e allineate fra loro sullo
+     stesso bordo sinistro, e i ritratti hanno lo stesso tetto in larghezza
+     (data-w), cosi' i due nomi cadono esattamente in colonna.
+
+     Le due arti hanno griglie diverse — 44 colonne per 24 righe contro 90 per 49 —
+     ma le proporzioni si somigliano: a parita' di larghezza vengono alte
+     0.909 e 0.907 volte la base. I due riquadri risultano della stessa misura
+     senza doverla imporre. */
+  .card{
+    max-width:940px;margin:0 auto;
+    display:flex;align-items:center;gap:clamp(28px, 5vw, 64px);
+  }
+  .card + .card{margin-top:clamp(48px, 8vh, 96px)}
+  .col-art{flex:0 0 auto}
+  .col-txt{flex:1 1 auto;min-width:0;font-family:var(--mono)}
+
+  /* Le intestazioni sono ASCII VERA: caratteri, non un font disegnato. Si
+     possono selezionare e incollare, ed e' il senso di tutta la pagina — se la
+     scritta grande e' fatta di caratteri, non ha senso che i titoli siano
+     tipografia normale in maiuscoletto. */
+  .banner{
+    max-width:940px;margin:0 auto clamp(46px, 7vh, 84px);
+    /* Centrato, e detto qui invece che ereditato dal contenitore: prima
+       CONTATTI si centrava perche' .contact ha text-align:center e CHI SIAMO
+       restava a sinistra perche' .portrait no. Due intestazioni uguali
+       allineate in modo diverso per un dettaglio che non le riguarda. */
+    text-align:center;
+    font-family:var(--mono);
+    white-space:pre;
+    line-height:1;
+    letter-spacing:0;
+    color:var(--lit);
+    /* stessa aberrazione del render, un filo piu' contenuta */
+    text-shadow:
+      -0.04em 0 rgba(255,42,140,.30),
+       0.04em 0 rgba(0,220,255,.28),
+       0 0 .4em rgba(37,240,216,.40);
+  }
+
+  .col-txt .name{
+    margin:0;
+    font-size:clamp(24px, 3.6vw, 44px);
+    font-weight:400;
+    letter-spacing:-.01em;
+    line-height:1.1;
+    color:var(--face);
+    /* la stessa aberrazione dell'email in fondo: e' tutto lo stesso fosforo */
+    text-shadow:
+      -0.03em 0 rgba(255,42,140,.32),
+       0.03em 0 rgba(0,220,255,.3),
+       0 0 .4em rgba(37,240,216,.42);
+  }
+  .col-txt .role{
+    margin:14px 0 0;
+    font-size:12px;letter-spacing:.30em;text-transform:uppercase;
+    color:var(--lit);opacity:.78;
+  }
+  .col-txt .bio{
+    max-width:42ch;
+    margin:22px 0 0;
+    font-size:14px;line-height:1.7;
+    color:var(--dim);
+  }
+  .col-txt .linkedin{
+    display:inline-block;
+    margin-top:18px;
+    padding-bottom:3px;
+    border-bottom:1px solid rgba(111,240,220,.30);
+    font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--lit);text-decoration:none;
+    text-shadow:0 0 .5em rgba(37,240,216,.35);
+    transition:color .2s, border-color .2s;
+  }
+  .col-txt .linkedin:hover,
+  .col-txt .linkedin:focus-visible{
+    color:var(--face);border-bottom-color:var(--face);
+  }
+
+  /* stretto: le due colonne si impilano e tutto torna centrato */
+  @media (max-width:760px){
+    .card{flex-direction:column;align-items:center;gap:32px}
+    .col-txt{text-align:center}
+    .col-txt .bio{margin-left:auto;margin-right:auto}
+    .banner{margin-bottom:clamp(30px, 5vh, 48px)}
+  }
+
+  /* La cornice ha esattamente la misura del blocco di caratteri: l'ASCII e'
+     il livello sottostante, mentre la foto gli si sovrappone al pixel. */
+  .frame{
+    position:relative;
+    cursor:crosshair;   /* stesso mirino del resto della pagina: e' una torcia, non un bottone */
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .card .art{
+    margin:0;
+    font-family:var(--mono);
+    white-space:pre;
+    line-height:1;
+    letter-spacing:0;
+    color:var(--lit);
+    user-select:none;
+    /* stessa aberrazione cromatica e stesso bloom della scritta */
+    text-shadow:
+      -0.06em 0 rgba(255,42,140,.42),
+       0.06em 0 rgba(0,220,255,.38),
+       0 0 .35em var(--glow);
+    animation: flicker 5.5s infinite steps(1);
+  }
+
+  /* La foto resta visibile; sono le GOCCE ad aprirla e a mostrare l'ASCII che
+     c'e' sotto. Il mouse ne lascia cadere una ogni tot pixel, quella resta dove
+     e' caduta e si riassorbe da sola in un paio di secondi. Il risultato segue
+     il mouse, ma con la sua strada: dietro resta una scia che si chiude, e la
+     zona aperta si spezza in chiazze staccate.
+
+     Tutto sta in un SVG, non in CSS: le gocce sono <circle> dentro una <mask>,
+     e la maschera si applica a un <image>. Il bianco mantiene visibile la foto,
+     il nero delle gocce la apre sull'ASCII. E' l'unico modo per farle FONDERE fra
+     loro — il filtro sfoca il gruppo e poi ricalca l'alfa a gradino, cosi' due
+     cerchi vicini diventano una forma sola con la strozzatura in mezzo. Con dei
+     div in CSS ogni goccia resterebbe un disco separato. */
+  .frame .reveal{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    display:block;
+    pointer-events:none;
+    overflow:visible;
+  }
+
+  /* l'svg dei filtri non deve occupare spazio ne' intercettare nulla.
+     Niente display:none — alcuni browser smettono di risolvere url(#...). */
+  svg.defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+
+  /* L'istruzione. Sta sotto la cornice, nello stesso tono e nello stesso respiro
+     dell'invito a scorrere della hero. Sparisce alla prima mossa del mouse: da
+     quel momento non serve piu' e resterebbe li' a spiegare l'ovvio. */
+  .card .hint{
+    margin:18px 0 0;
+    font-family:var(--mono);font-size:11px;
+    letter-spacing:.34em;text-transform:uppercase;
+    color:var(--dim);
+    text-shadow:0 0 .5em rgba(37,240,216,.4);
+    animation:breathe 2.8s ease-in-out infinite;
+    transition:opacity .5s ease;
+  }
+  .card .hint::before{content:"\2192\00a0\00a0"}
+  .card .hint.off{opacity:0}
+  @media (max-width:760px){.card .hint{text-align:center}}
+
+  @media (prefers-reduced-motion: reduce){
+    .card .art{animation:none}
+    .card .hint{animation:none}
+  }
+
+  /* ---------- contatti ---------- */
+  .contact{
+    position:relative;z-index:1;   /* sotto al menu e al vetro CRT */
+    max-width:760px;
+    margin:0 auto;
+    /* Era 14vh. Sommato ai 9vh sotto alla riga faceva 23vh di niente fra il
+       bordo della sezione e il titolo: cliccando "contatti" nel menu si
+       atterrava su uno schermo vuoto, con CONTATTI ancora sotto la piega.
+       Ora le due sezioni si aprono con lo stesso ritmo. */
+    padding:6vh 28px 10vh;
+    font-family:var(--mono);
+    color:var(--lit);
+    text-align:center;
+  }
+  /* Il filo che stacca una sezione dalla precedente. Era solo dei contatti;
+     senza, .portrait si attaccava alla hero senza che niente dicesse che li'
+     comincia un'altra cosa. */
+  .rule{
+    height:1px;
+    background:linear-gradient(to right,
+      transparent, rgba(87,226,207,.34) 22%, rgba(87,226,207,.34) 78%, transparent);
+    margin-bottom:7vh;
+  }
+  /* allineata alla colonna del contenuto, non al bordo della finestra: sotto
+     ci sono le schede, larghe 940, e un filo piu' largo di loro si noterebbe */
+  .portrait .rule{max-width:940px;margin-left:auto;margin-right:auto}
+  /* nei contatti tutto e' centrato: le righe del banner sono tutte lunghe
+     uguali, quindi text-align:center centra il blocco senza scalinature */
+  .contact .banner{margin-bottom:26px}
+  .contact .mail{
+    display:inline-block;
+    font-size:clamp(20px, 4.4vw, 40px);
+    letter-spacing:-.01em;
+    color:var(--face);
+    text-decoration:none;
+    padding:6px 2px;
+    border-bottom:1px solid rgba(87,226,207,.30);
+    text-shadow:
+      -0.03em 0 rgba(255,42,140,.32),
+       0.03em 0 rgba(0,220,255,.3),
+       0 0 .4em rgba(37,240,216,.42);
+    transition:border-color .2s, letter-spacing .2s;
+  }
+  .contact .mail:hover{border-bottom-color:var(--face);letter-spacing:.012em}
+  .contact .note{
+    margin:34px auto 0;max-width:44ch;
+    font-size:13px;line-height:1.75;color:var(--lit);opacity:.75;
+  }
+  .contact footer{
+    margin-top:12vh;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--dim);
+    text-shadow:0 0 .5em rgba(37,240,216,.4);
+  }
+
+  @media (max-width:560px){
+    .contact{padding:10vh 22px 8vh}
+    .contact footer{justify-content:center;text-align:center}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #screen{animation:none}
+    .cue .rail::after{animation:none;opacity:.7}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="#top">Guggiarom</a>
+  <div class="links">
+    <a class="lnk" href="#chi-siamo">chi siamo</a>
+    <a class="lnk" href="#contatti">contatti</a>
+  </div>
+</nav>
+
+<div class="hero" id="top">
+  <pre id="screen" role="img" aria-label="GUGGIAROM"></pre>
+  <a class="cue" id="cue" href="#chi-siamo">
+    <span>scorri</span>
+    <span class="rail"></span>
+  </a>
+</div>
+
+<section class="portrait" id="chi-siamo">
+ <div class="rule"></div>
+ <pre class="banner" data-word="CHI SIAMO" role="heading" aria-level="2" aria-label="Chi siamo"></pre>
+
+ <article class="card" data-art="art-andrea" data-photo="foto2.jpeg" data-w="320">
+  <div class="col-art">
+   <div class="frame" tabindex="0">
+    <pre class="art" role="img" aria-label="Ritratto di Andrea Romeo, in ASCII"></pre>
+    <svg class="reveal" aria-hidden="true"></svg>
+   </div>
+   <p class="hint">muovi il mouse sull'immagine</p>
+  </div>
+  <div class="col-txt">
+   <h2 class="name">Andrea Romeo</h2>
+   <p class="role">AI Platform Engineer &amp; Data Platform</p>
+   <a class="linkedin" href="https://www.linkedin.com/in/andrea-romeo-aa4b17223/" target="_blank" rel="noopener noreferrer" aria-label="Profilo LinkedIn di Andrea Romeo">LinkedIn&nbsp;&nearr;</a>
+  </div>
+ </article>
+
+ <article class="card" data-art="art-martino" data-photo="foto1.jpeg" data-w="320">
+  <div class="col-art">
+   <div class="frame" tabindex="0">
+    <pre class="art" role="img" aria-label="Ritratto di Martino Guggiari, in ASCII"></pre>
+    <svg class="reveal" aria-hidden="true"></svg>
+   </div>
+  </div>
+  <div class="col-txt">
+   <h2 class="name">Martino Guggiari</h2>
+   <p class="role">Business Tech Consultant</p>
+   <a class="linkedin" href="https://www.linkedin.com/in/martinoguggiari/" target="_blank" rel="noopener noreferrer" aria-label="Profilo LinkedIn di Martino Guggiari">LinkedIn&nbsp;&nearr;</a>
+  </div>
+ </article>
+</section>
+
+<section class="contact" id="contatti">
+  <div class="rule"></div>
+  <pre class="banner" data-word="CONTATTI" role="heading" aria-level="2" aria-label="Contatti"></pre>
+  <a class="mail" href="mailto:martino@guggiarom.it">martino@guggiarom.it</a>
+  <p class="note">Raccontaci il progetto in due righe. Rispondiamo entro un paio di giorni.</p>
+  <footer>
+    <span>&copy; <span id="year">2026</span> Guggiarom</span>
+    <span>Milano</span>
+  </footer>
+</section>
+
+<div class="crt mask"></div>
+<div class="crt lines"></div>
+<div class="crt glass"></div>
+
+<script>
+/* ===================================================================
+   Il font a caratteri, 7 righe. Serve a due cose molto diverse — la
+   scritta 3D della hero lo usa come SEZIONE di un solido da estrudere,
+   le intestazioni delle sezioni come disegno piatto — quindi sta fuori
+   da tutti e due e non appartiene a nessuno dei due.
+
+   Le sette lettere di GUGGIAROM sono quelle di sempre, identiche: la
+   hero deve continuare a renderizzare esattamente com'era. Le altre
+   sono nuove e seguono la stessa regola — 6 colonne, aste spesse 1,
+   tranne la I che ne vuole 4 o resterebbe un lastrone.
+   =================================================================== */
+var ASCII_FONT = {
+  A: ['.####.', '#....#', '#....#', '######', '#....#', '#....#', '#....#'],
+  B: ['#####.', '#....#', '#....#', '#####.', '#....#', '#....#', '#####.'],
+  C: ['.####.', '#....#', '#.....', '#.....', '#.....', '#....#', '.####.'],
+  D: ['#####.', '#....#', '#....#', '#....#', '#....#', '#....#', '#####.'],
+  E: ['######', '#.....', '#.....', '#####.', '#.....', '#.....', '######'],
+  F: ['######', '#.....', '#.....', '#####.', '#.....', '#.....', '#.....'],
+  G: ['.####.', '#.....', '#.....', '#..###', '#....#', '#....#', '.####.'],
+  H: ['#....#', '#....#', '#....#', '######', '#....#', '#....#', '#....#'],
+  I: ['####',   '.##.',   '.##.',   '.##.',   '.##.',   '.##.',   '####'  ],
+  J: ['..####', '....##', '....##', '....##', '#...##', '#...##', '.####.'],
+  K: ['#....#', '#...#.', '#..#..', '###...', '#..#..', '#...#.', '#....#'],
+  L: ['#.....', '#.....', '#.....', '#.....', '#.....', '#.....', '######'],
+  M: ['#....#', '##..##', '#.##.#', '#.##.#', '#....#', '#....#', '#....#'],
+  N: ['#....#', '##...#', '#.#..#', '#..#.#', '#...##', '#....#', '#....#'],
+  O: ['.####.', '#....#', '#....#', '#....#', '#....#', '#....#', '.####.'],
+  P: ['#####.', '#....#', '#....#', '#####.', '#.....', '#.....', '#.....'],
+  Q: ['.####.', '#....#', '#....#', '#....#', '#..#.#', '#...#.', '.###.#'],
+  R: ['#####.', '#....#', '#....#', '#####.', '#..##.', '#....#', '#....#'],
+  S: ['.####.', '#....#', '#.....', '.####.', '.....#', '#....#', '.####.'],
+  T: ['######', '..##..', '..##..', '..##..', '..##..', '..##..', '..##..'],
+  U: ['#....#', '#....#', '#....#', '#....#', '#....#', '#....#', '.####.'],
+  V: ['#....#', '#....#', '#....#', '#....#', '#....#', '.#..#.', '..##..'],
+  W: ['#....#', '#....#', '#....#', '#.##.#', '#.##.#', '##..##', '#....#'],
+  X: ['#....#', '.#..#.', '..##..', '..##..', '..##..', '.#..#.', '#....#'],
+  Y: ['#....#', '.#..#.', '..##..', '..##..', '..##..', '..##..', '..##..'],
+  Z: ['######', '.....#', '....#.', '..##..', '.#....', '#.....', '######'],
+  ' ': ['...', '...', '...', '...', '...', '...', '...']
+};
+</script>
+
+<script>
+(function () {
+  /* ===================================================================
+     GUGGIAROM come solido 3D, renderizzato in caratteri.
+
+     La parola è un prisma: sezione = bitmap delle lettere, estrusa in z.
+     Per ogni cella di testo parte un raggio dalla camera prospettica; lo
+     si porta in spazio oggetto con la TRASPOSTA della rotazione, lo si
+     interseca con l'AABB e lo si marcia finché non incontra pieno.
+     Il primo colpo è la superficie: l'occlusione viene gratis.
+
+     Shading PIATTO, non a rampa: una rampa a molti livelli su lettere
+     larghe pochi caratteri diventa puntinato illeggibile. Qui ogni
+     faccia ha il suo blocco e il suo colore, e le lettere restano nitide.
+     Nessuna transform CSS: cambiano solo caratteri e colore.
+     =================================================================== */
+
+  var FONT = ASCII_FONT;   /* definito sopra: lo condivide con le intestazioni */
+
+  var WORD  = 'GUGGIAROM';
+  var GAP   = 1;      /* colonne vuote tra le lettere */
+  var DEPTH = 6;      /* spessore: a 22 gradi il fianco e' 2.2 unita' */
+  var STEP  = 0.26;   /* passo di marcia lungo il raggio */
+
+  /* L'oggetto guarda il cursore, come una testa che ti segue nella stanza.
+     Non ci sono angoli massimi scritti a mano: si mette un osservatore a
+     distanza ROOM davanti allo schermo e si orienta la faccia frontale verso
+     di lui. Il limite viene fuori da solo dalla geometria — e' l'angolo sotto
+     cui si vede il bordo dello schermo da quella distanza. Piu' ROOM e'
+     grande, piu' l'osservatore e' lontano e piu' i movimenti sono contenuti. */
+  var ROOM = 2.2;          /* distanza osservatore, in multipli di mezza vista */
+  var IDLE_SPAN = 0.85;    /* quanto vaga lo sguardo quando nessuno tocca il mouse */
+
+  var CH_FACE = '█', CL_FACE = '';    /* █ faccia frontale */
+  var CH_LIT  = '▓', CL_LIT  = 'l';   /* ▓ parete in piena luce */
+  var CH_MID  = '▒', CL_MID  = 'm';   /* ▒ parete di scorcio    */
+  var CH_DARK = '▒', CL_DARK = 'd';   /* ▒ parete in ombra      */
+  var CH_BACK = '░', CL_BACK = 'k';   /* ░ faccia dietro   */
+
+  /* direzione della luce, spazio mondo */
+  var LX = -0.45, LY = 0.66, LZ = -0.60;
+  (function () { var l = Math.hypot(LX, LY, LZ); LX /= l; LY /= l; LZ /= l; })();
+
+  /* ---------- bitmap della parola ---------- */
+  var BH = 7, BW = 0, i, y, x;
+  for (i = 0; i < WORD.length; i++) BW += FONT[WORD[i]][0].length + (i ? GAP : 0);
+
+  var bits = new Uint8Array(BW * BH), ox = 0;
+  for (i = 0; i < WORD.length; i++) {
+    var g = FONT[WORD[i]];
+    for (y = 0; y < BH; y++)
+      for (x = 0; x < g[y].length; x++)
+        if (g[y][x] === '#') bits[y * BW + ox + x] = 1;
+    ox += g[0].length + GAP;
+  }
+
+  var HX = BW / 2, HY = BH / 2, HZ = DEPTH / 2;
+
+
+  function solid(px, py) {
+    var u = px + HX, v = HY - py;
+    if (u < 0 || v < 0) return 0;
+    var c = u | 0, r = v | 0;
+    if (c >= BW || r >= BH) return 0;
+    return bits[r * BW + c];
+  }
+
+  /* ---------- schermo ---------- */
+  var el   = document.getElementById('screen');
+  var hero = document.querySelector('.hero');
+  var COLS = 0, ROWS = 0, VW = 0, VH = 0, CAM = 0;
+  var PAD = [], BLANK = '';        /* stringhe di spazi precalcolate */
+  var lastHTML = null;
+
+  function layout() {
+    var probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-size:100px';
+    probe.style.fontFamily = getComputedStyle(el).fontFamily;
+    probe.textContent = '0'.repeat(100);
+    document.body.appendChild(probe);
+    var unit = probe.getBoundingClientRect().width / 100 / 100;  /* larghezza char per 1px */
+    probe.remove();
+
+    /* il bloom (text-shadow sfocato) costa per glifo: con la griglia troppo
+       fitta il frame rate cala. 160 colonne e' il compromesso. */
+    /* Misurare la hero, non window.innerWidth: da quando la pagina scorre c'e'
+       una scrollbar, e usando innerWidth il <pre> veniva piu' largo del
+       contenitore e overflow-x:hidden ne tagliava il bordo destro. */
+    var availW = hero.clientWidth, availH = hero.clientHeight;
+
+    COLS = Math.max(64, Math.min(160, Math.round(availW / 9)));
+    var fs = availW / (COLS * unit);
+    ROWS = Math.max(16, Math.min(64, Math.floor(availH / fs)));
+    el.style.fontSize = fs + 'px';
+
+    PAD = new Array(COLS + 1);
+    PAD[0] = '';
+    for (var p = 1; p <= COLS; p++) PAD[p] = PAD[p - 1] + ' ';
+    BLANK = PAD[COLS];
+
+    /* inquadratura: il solido ci deve stare sia in larghezza sia in altezza.
+       Le celle sono ~0.6 larghe e 1.0 alte, quindi l'aspetto va corretto. */
+    var aspect = (COLS * 0.6) / (ROWS * 1.0);
+    var margin = 1.12;
+    VW = Math.max(HX * margin, HY * margin * aspect);
+    VH = VW / aspect;
+    CAM = Math.max(VW, VH) * 7;    /* piu' vicino = piu' prospettiva; sotto x6 le lettere si accavallano */
+  }
+
+  /* ---------- un frame ---------- */
+  function render(yaw, pitch) {
+    var ca = Math.cos(yaw),   sa = Math.sin(yaw);
+    var cp = Math.cos(pitch), sp = Math.sin(pitch);
+
+    /* R = Ry(yaw)·Rx(pitch): oggetto -> mondo. La trasposta fa l'inverso. */
+    var r00 = ca,  r01 = sa * sp, r02 = sa * cp;
+    var r10 = 0,   r11 = cp,      r12 = -sp;
+    var r20 = -sa, r21 = ca * sp, r22 = ca * cp;
+
+    /* camera (0,0,-CAM) portata in spazio oggetto con R^T */
+    var oxo = r20 * -CAM, oyo = r21 * -CAM, ozo = r22 * -CAM;
+
+    /* Bounding box sullo schermo: si proiettano gli 8 vertici dell'AABB e si
+       tirano raggi solo dentro quel rettangolo. L'oggetto occupa una decina di
+       righe su cinquanta, quindi qui si taglia la gran parte del lavoro. */
+    var cMin = COLS, cMax = -1, rMin = ROWS, rMax = -1;
+    for (var v = 0; v < 8; v++) {
+      var vx = (v & 1) ? HX : -HX, vy = (v & 2) ? HY : -HY, vz = (v & 4) ? HZ : -HZ;
+      var wX = r00 * vx + r01 * vy + r02 * vz;
+      var wY = r10 * vx + r11 * vy + r12 * vz;
+      var wZ = r20 * vx + r21 * vy + r22 * vz;
+      var k  = CAM / (wZ + CAM);
+      var sc = ((k * wX) / VW + 1) * 0.5 * COLS;
+      var sr = (1 - (k * wY) / VH) * 0.5 * ROWS;
+      if (sc < cMin) cMin = sc; if (sc > cMax) cMax = sc;
+      if (sr < rMin) rMin = sr; if (sr > rMax) rMax = sr;
+    }
+    cMin = Math.max(0, (cMin | 0) - 1); cMax = Math.min(COLS - 1, (cMax | 0) + 1);
+    rMin = Math.max(0, (rMin | 0) - 1); rMax = Math.min(ROWS - 1, (rMax | 0) + 1);
+
+    var out = '', cls = null, run = '';
+
+    for (var j = 0; j < ROWS; j++) {
+      if (j < rMin || j > rMax) {
+        out += BLANK;
+        if (j < ROWS - 1) out += '\n';
+        continue;
+      }
+
+      var py = (1 - (j + 0.5) / ROWS * 2) * VH;
+      cls = 'sp'; run = PAD[cMin];
+
+      for (var ii = cMin; ii <= cMax; ii++) {
+        var px = ((ii + 0.5) / COLS * 2 - 1) * VW;
+
+        var dwx = px, dwy = py, dwz = CAM;
+        var il = 1 / Math.sqrt(dwx * dwx + dwy * dwy + dwz * dwz);
+        dwx *= il; dwy *= il; dwz *= il;
+
+        /* direzione del raggio in spazio oggetto */
+        var dx = r00 * dwx + r10 * dwy + r20 * dwz;
+        var dy = r01 * dwx + r11 * dwy + r21 * dwz;
+        var dz = r02 * dwx + r12 * dwy + r22 * dwz;
+
+        /* AABB */
+        var t0 = 0, t1 = 1e9, tmp, a, b, ea = 2, ok = true;
+        if (Math.abs(dx) < 1e-6) { if (oxo < -HX || oxo > HX) ok = false; }
+        else { a = (-HX - oxo) / dx; b = (HX - oxo) / dx;
+               if (a > b) { tmp = a; a = b; b = tmp; }
+               if (a > t0) { t0 = a; ea = 0; } if (b < t1) t1 = b; }
+        if (ok) { if (Math.abs(dy) < 1e-6) { if (oyo < -HY || oyo > HY) ok = false; }
+          else { a = (-HY - oyo) / dy; b = (HY - oyo) / dy;
+                 if (a > b) { tmp = a; a = b; b = tmp; }
+                 if (a > t0) { t0 = a; ea = 1; } if (b < t1) t1 = b; } }
+        if (ok) { if (Math.abs(dz) < 1e-6) { if (ozo < -HZ || ozo > HZ) ok = false; }
+          else { a = (-HZ - ozo) / dz; b = (HZ - ozo) / dz;
+                 if (a > b) { tmp = a; a = b; b = tmp; }
+                 if (a > t0) { t0 = a; ea = 2; } if (b < t1) t1 = b; } }
+
+        var ch = ' ', klass = 'sp';
+
+        if (ok && t1 > t0) {
+          var t = t0, hit = -1, first = true;
+          while (t <= t1) {
+            if (solid(oxo + dx * t, oyo + dy * t)) { hit = t; break; }
+            first = false;
+            t += STEP;
+          }
+
+          if (hit >= 0) {
+            var wx = oxo + dx * hit, wy = oyo + dy * hit, wz = ozo + dz * hit;
+
+            if (first && ea === 2) {
+              if (wz < 0) {
+                /* faccia frontale */
+                ch = CH_FACE; klass = CL_FACE;
+              } else {
+                /* Faccia posteriore. Lasciandola a tono fisso, oltre i 90 gradi
+                   la scritta spariva nel nero per meta' giro. Va illuminata come
+                   una superficie vera, ma tenuta sempre sotto la frontale: cosi'
+                   il rovescio si legge e resta chiaro che e' il rovescio. */
+                var bl = r02 * LX + r12 * LY + r22 * LZ;
+                if      (bl > 0.50) { ch = CH_LIT;  klass = CL_LIT;  }
+                else if (bl > 0.20) { ch = CH_MID;  klass = CL_MID;  }
+                else                { ch = CH_BACK; klass = CL_BACK; }
+              }
+            } else {
+              /* parete laterale: normale dal gradiente della bitmap */
+              var nx = solid(wx - 1, wy) - solid(wx + 1, wy);
+              var ny = solid(wx, wy - 1) - solid(wx, wy + 1);
+              var nl = Math.sqrt(nx * nx + ny * ny);
+              if (nl < 1e-6) { nx = -dx; ny = -dy; } else { nx /= nl; ny /= nl; }
+
+              var mx = r00 * nx + r01 * ny;
+              var my = r10 * nx + r11 * ny;
+              var mz = r20 * nx + r21 * ny;
+
+              /* tre bande invece di due: il volume si legge sul salto di tono.
+                 La luce di rimbalzo dal basso evita che, guardando l'oggetto da
+                 sotto, le facce inferiori sprofondino nel nero e i tratti
+                 orizzontali sembrino buchi. */
+              var lam = mx * LX + my * LY + mz * LZ;
+              if (my < 0) lam -= my * 0.34;
+              if      (lam > 0.45) { ch = CH_LIT;  klass = CL_LIT;  }
+              else if (lam > 0.00) { ch = CH_MID;  klass = CL_MID;  }
+              else                 { ch = CH_DARK; klass = CL_DARK; }
+            }
+
+          }
+        }
+
+        if (klass !== cls) {
+          if (run) out += (cls && cls !== 'sp') ? '<span class="' + cls + '">' + run + '</span>' : run;
+          cls = klass; run = '';
+        }
+        run += ch;
+      }
+
+      /* niente trim: ogni riga deve essere larga esattamente COLS, altrimenti
+         il <pre> si restringe al contenuto e la scritta esce dal centro */
+      if (run) out += (cls && cls !== 'sp') ? '<span class="' + cls + '">' + run + '</span>' : run;
+      out += PAD[COLS - 1 - cMax];
+      run = ''; cls = null;
+      if (j < ROWS - 1) out += '\n';
+    }
+
+    /* Il raycast costa ~0.12 ms; il grosso se ne va in innerHTML e nel bloom.
+       Se la stringa non e' cambiata, non si tocca il DOM. */
+    if (out !== lastHTML) { lastHTML = out; el.innerHTML = out; }
+  }
+
+  /* ---------- il mouse ruota il solido ---------- */
+  var tYaw = 0, tPitch = 0, cYaw = 0, cPitch = 0, touched = false, t0c = performance.now();
+  var lastYaw = 1e9, lastPitch = 1e9;
+
+  /* u,v normalizzati in -1..1 sullo schermo. Si costruisce il punto guardato e si
+     ricavano gli angoli che gli puntano contro la faccia frontale. Quella normale,
+     ruotata, vale (-sin(yaw)cos(pitch), sin(pitch), -cos(yaw)cos(pitch)):
+     uguagliandola alla direzione voluta, si inverte in forma chiusa. */
+  function lookAt(u, v) {
+    var px = u * VW, py = v * VH, pz = -VW * ROOM;
+    var L  = Math.sqrt(px * px + py * py + pz * pz);
+    tPitch = Math.asin(py / L);
+    tYaw   = Math.atan2(-px / L, -pz / L);
+  }
+
+  function aim(mx, my) {
+    touched = true;
+    lookAt((mx / window.innerWidth  - 0.5) * 2,
+          -(my / window.innerHeight - 0.5) * 2);
+  }
+  window.addEventListener('mousemove', function (e) { aim(e.clientX, e.clientY); });
+  window.addEventListener('touchmove', function (e) {
+    if (e.touches[0]) aim(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+
+  function loop(now) {
+    if (!touched) {
+      /* nessuno nella stanza: lo sguardo vaga piano, dentro gli stessi limiti */
+      var s = (now - t0c) / 1000;
+      lookAt(Math.sin(s * 0.31) * IDLE_SPAN, Math.sin(s * 0.23 + 1.1) * IDLE_SPAN);
+    }
+    cYaw   += (tYaw   - cYaw)   * 0.08;
+    cPitch += (tPitch - cPitch) * 0.08;
+
+    /* quando l'inseguimento si e' assestato non c'e' nulla di nuovo da disegnare */
+    if (Math.abs(cYaw - lastYaw) > 0.0012 || Math.abs(cPitch - lastPitch) > 0.0012) {
+      lastYaw = cYaw; lastPitch = cPitch;
+      render(cYaw, cPitch);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  layout();
+  window.addEventListener('resize', function () { layout(); render(cYaw, cPitch); });
+  render(0, 0);
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<script id="art-andrea" type="text/plain">
+:---==============================++++++++++
+::::---==============*####**##***+++++++++++
+--=================*#%%%%#*#%%#**+++========
+-===============+###%%@%%%%@%#*###*=========
+===========++==++%%@@@@@%%@%%%%%%#*=========
+====+++=========*%%@%*=+==+++*%%%%***##%%%%%
+==+=====---::::=#%%%=--======-=%%#%#%%%%%%%%
+====--:::::::-=*#%%*=====-=====*%%%#%#%%%%%%
+--=+++************%**##%#*#*##**#*########%#
+--+***####*****+*#*+*#%%#++#%#*=**########%#
+--=***#*=****++***===***+=-*=====*########%#
+::=***##+=++*+*##+===*#**++++*=-=+########%%
+==+***##:-++***=**=+*#*****+=+*+=*##****##%%
+-=+***#=-=--=**%%%*%***==::-==+*#*********%%
+-=+***#====-*%%%%%**#*==++==-=##**********%%
+++****#%%%%%%%%%%%**+%*======#=***********#%
+--+*****************+=*%####*--=++#*******#%
+--:::::::-=*********=====+=-----=:=#*##****%
+--::::::::==:-==***--===++=------:=##*##*#*#
+--::::::::==::*###*--====+==-----*##*####***
+--::::::-:-=*##%%#%#=========+*##########*#*
+==:::::::-=#%%%%%%%%########*##*#########***
+=---------*%%%%%%%%%%%%%%%%%%#############**
+-=+**#*===%%%%%%%%%%%%#%######%###*##*######
+</script>
+
+<script id="art-martino" type="text/plain">
+                                                                                          
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::::::::::;;;;;;+;;::;;;;::::::::::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::;;+++++;+x$&&&&&XX$&+X+:::::::::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::::::::;X&$$X$$$$&&&&&&&&&&&&$$+::::::::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::::;+X$$$$&&&&&&&&&&&&&&&&&&&&&Xx+;:::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::;+$&&&&&&&&&&&&&&&&&&&&&&&&&&&$Xx+;:::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::+$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&X&+::::::::::::::::::::::::::: 
+ ::::::::::::::::::::X$+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&+;::::::::::::::::::::::::: 
+ ::::::::::::::::::::+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&x;:::::::::::::::::::::::: 
+ ::::::::::::::::::::;X&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&x:::::::::::::::::::::::: 
+ :::::::::::::::::::::;+$&&&&&&&&&&&$XXXXX$$&&&&&&&&&&&&&&&&&&&&X:::::::::::::::::::::::: 
+ :::::::::::::::::::::::+&&&&&&&&$$XXXx+++xX$$$$$$$&&&&&&&&&&&&&+:::::::::::::::::::::::: 
+ :::::::::::::::::::::;+$&&&&&&&$xxx++xx+xXXXXX$$$$$&&&&&&&&&&&&x:::::::::::::::::::::::: 
+ ::::::::::::::::::::x$&&&&&&&&&$XXXXX$$XXxxX$&&&$$$$&&&&&&&&&&&&$::::::::::::::::::::::: 
+ ::::::::::::::::::::;&&&&&&&&&&$XX$$&&&Xx++X&&$&&&&$$&&&&&&&&&&$;::::::::::::::::::::::: 
+ ::::::::::::::::::::;$&&&&&&&&&X+++++xxx+++X$$$XXXXXX$&&&&&&&&&x:::::::::::::::::::::::: 
+ :::::::::::::::::::::X&&&&&&&&&x+++++++++++X$$$XxXXX$$&&&&&&&&&+:::::::::::::::::::::::: 
+ ::::::::::::::::::::::;;;X&&&&$x+++++++++++x$&$$xxxX$$&&&&&&&&$;:::::::::::::::::::::::: 
+ :::::::::::::::::::::::::+&&&$$X++++XX++XXX$&&&$XXXX$$&&&&&&&+:::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::+$&$$$Xx++X$$$$$$XX&&&&&&XX$$&&&&&$;::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::::::+$&$xx+X&X&Xx++xX$&&$$XX$&&&&&&X+::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::::::x&&&Xxx+X+++xxXXX$$XXx+$&&&&&&$x;::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::;x$$Xx++++++xXXXXXXXX$&&&&X+::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::;++XXx++++++xXXXX$&&&$X+::::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::::;+xXXXxxxxXXX$&&&&&&&x;:::::::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::::::::::;x+++xXX$$$$&&&&&&$$$&&&x::::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::::;XX++;++++++xXX$$$XX$$&&&$X:::::::::::::::::::::::::::::: 
+ :::::::::::::::::::::::::::::+++X$+;;;++++++XX$XXXXX$&&$$$$X+::::::::::::::::::::::::::: 
+ ::::::::::::::::::::::::;+++++x+x$X+;;;;++++xXXXxXXX$$$$$$$$$XXXx;:::::::::::::::::::::: 
+ :::::::::::::::::::::+XxX++xXxX+xx$$+;;;;+++xxxxxxXXX$X$$$$$&&$$$&$$X;:::::::::::::::::: 
+ ::::::::::::::::;xX$$$XXXXXX$XX+x+x$&++++++++xxxxXXXXXX$$$$$$XXxXXXX$$$$x::::::::::::::: 
+ :::::::::::::+X$XXXX$X+++++++XX+x++x$&X+++++++xxXxxx$$$$$$$$XX++++x+xxXXxxxx;::::::::::: 
+ ::::::::::;xXXXX++xxX+;;;;;++$X+xXXXxX&$XXx++++xxxXXX$&&&$$$$XX+++x+xxXXx++xXX+::::::::: 
+ ::::::::;+xxXXXX+xxXX++;;;;;+$&$$$$&XXX$$XXXXx+xXXX$$$$XX$$$$XXx++++xxxxX+++xXXx;::::::: 
+ ::::::;+++xXXXXx++xxx+++;;;;;;XXXX++XXxXx++$&$xX$$$X++++++++++;;;++++xxxx;++xxXxX+:::::: 
+ :::::;++++xXXXXxxxXxx+++;;;;;;;;;;;;++XXXx+;X$X$XXx+;;;;;;;;;;;;++x+xxxxX;++xxxxxXx::::: 
+ ::::;++++xxxXXXxxxXxx+;;;;;;;;;;;;;;+;++XXx+X$Xxxx+;;;;;;;;;;;;;++x+xxxXX+++xx+x+XX+:::: 
+ ::::+x+++xXxXXXxxxXXx+;;+;;;;;;;;;;;++++xXXX&&$+xx+;;;;;;;;;;;;;;+x+xxXXx+++xX+++xXX;::: 
+ :::+XXX++xXxXXX+xxXXX++;+;++++++++xxXXX$$$$&&&$X$$X++++++xxxxxxxxXXX$$$$XXxX$X++X+XXx::: 
+ ::;X$XXx++XXXX$XXX$$$Xxx+++++x+xxx+xXXX$$&$&X$X$$$X+xxxxxxxxxXxXxX$X$$&&XXXX$$xXX+X$X;:: 
+ ::;X$$$X+xX$$$$XX$$$$XXXXXXXXXXXXXXX$$$$&&&&$$$&&&$XXXXXXXXXXXXXX$$$$&&&$$$$&&XX$xX&$x:: 
+                                                                                          
+</script>
+
+<script>
+(function () {
+  /* ===================================================================
+     Le schede: una foto a sinistra, il nome di fianco, e il ritratto ASCII
+     sottostante che si scopre a gocce sotto il mouse.
+
+     Tutto quello che segue vale per UNA scheda e viene applicato a ognuna:
+     ogni scheda ha la sua arte, la sua foto, il suo pool di gocce e la sua
+     maschera. L'unica cosa condivisa e' il filtro #goo in fondo alla pagina —
+     e' identico per tutte e non ha senso duplicarlo.
+     =================================================================== */
+
+  var NS   = 'http://www.w3.org/2000/svg';
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var uid  = 0;
+
+  function setupCard(card) {
+    var pre   = card.querySelector('.art');
+    var frame = card.querySelector('.frame');
+    var svg   = card.querySelector('.reveal');
+    var hint  = card.querySelector('.hint');
+    var srcEl = document.getElementById(card.getAttribute('data-art'));
+    if (!srcEl) return;
+
+    /* ---------- l'arte ----------
+       Le righe vengono pareggiate alla piu' lunga: se restano corte il <pre> si
+       stringe al contenuto e la foto, che ci va sopra, non combacia piu'. */
+    var lines = srcEl.textContent.replace(/^\n/, '').replace(/\n$/, '').split('\n');
+    var COLS  = 0, i;
+    for (i = 0; i < lines.length; i++) if (lines[i].length > COLS) COLS = lines[i].length;
+    for (i = 0; i < lines.length; i++)
+      while (lines[i].length < COLS) lines[i] += ' ';
+    pre.textContent = lines.join('\n');
+
+    /* ---------- la maschera ----------
+       Costruita qui e non nell'HTML perche' ogni scheda ha bisogno del SUO id:
+       due <mask> con lo stesso nome e la seconda foto verrebbe ritagliata dalle
+       gocce della prima. */
+    var id    = 'drops-' + (uid++);
+    var defs  = document.createElementNS(NS, 'defs');
+    var mask  = document.createElementNS(NS, 'mask');
+    var base  = document.createElementNS(NS, 'rect');
+    var group = document.createElementNS(NS, 'g');
+    var img   = document.createElementNS(NS, 'image');
+    mask.setAttribute('id', id);
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    base.setAttribute('x', 0);
+    base.setAttribute('y', 0);
+    base.setAttribute('fill', '#fff');
+    group.setAttribute('filter', 'url(#goo)');
+    group.setAttribute('fill', '#000');
+    img.setAttribute('href', card.getAttribute('data-photo'));
+    img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+    img.setAttribute('mask', 'url(#' + id + ')');
+    mask.appendChild(base);  mask.appendChild(group); defs.appendChild(mask);
+    svg.appendChild(defs);   svg.appendChild(img);
+
+    /* ---------- misura ---------- */
+    var CAP = parseFloat(card.getAttribute('data-w')) || 360;
+
+    function fit() {
+      var probe = document.createElement('span');
+      probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-size:100px';
+      probe.style.fontFamily = getComputedStyle(pre).fontFamily;
+      probe.textContent = '0'.repeat(100);
+      document.body.appendChild(probe);
+      var unit = probe.getBoundingClientRect().width / 100 / 100;  /* larghezza char per 1px di corpo */
+      probe.remove();
+
+      /* Il ritratto e' la colonna di sinistra: prende il 40% della riga e si
+         ferma al tetto scritto in data-w. Misurare .col-art non si puo' — e'
+         larga quanto il <pre>, e il <pre> lo stiamo dimensionando adesso: si
+         misura la scheda intera. */
+      var wide   = window.innerWidth > 760;
+      var availW = wide ? Math.min(card.clientWidth * 0.40, CAP)
+                        : Math.min(card.clientWidth, CAP * 1.15);
+      var fsW = availW / (COLS * unit);
+      var fsH = (window.innerHeight * 0.52) / lines.length;
+      pre.style.fontSize = Math.min(fsW, fsH) + 'px';
+    }
+
+    /* ---------- le gocce ----------
+       Il punto e' che la rivelazione NON sta incollata al cursore. Il mouse fa
+       cadere una goccia ogni SPACING pixel di strada; da quel momento la goccia
+       e' per conto suo — resta dove e' caduta, si allarga, sta un po', si
+       riassorbe. Quello che si vede segue il mouse perche' e' li' che le gocce
+       nascono, ma con la sua strada: dietro resta una scia che si chiude piano,
+       e la zona scoperta si spezza in chiazze staccate invece di essere una
+       macchia sola.
+
+       Sotto al cursore c'e' pero' una goccia di testa, piu' grande, che insegue
+       con una molla molle: senza, muovendo piano non nascerebbe niente e la foto
+       sembrerebbe non rispondere. */
+    var POOL    = 34;      /* gocce contemporaneamente in aria */
+    var LIFE    = 2100;    /* ms di vita di una goccia */
+    var SPACING = 0, DROP_R = 0, HEAD_R = 0;
+
+    var drops = [], W = 0, H = 0;
+    for (var d = 0; d < POOL; d++) {
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('r', 0);
+      group.appendChild(c);
+      drops.push({ el: c, born: -1e9, x: 0, y: 0, r0: 0, vx: 0, vy: 0, r: -1 });
+    }
+    var next = 0;
+
+    /* la testa e' un cerchio a parte, sempre presente mentre il mouse c'e' */
+    var head = document.createElementNS(NS, 'circle');
+    head.setAttribute('r', 0);
+    group.appendChild(head);
+
+    var pX = 0, pY = 0;            /* dove sta il puntatore */
+    var hX = 0, hY = 0, hR = 0;    /* la testa: insegue con ritardo */
+    var lastX = 0, lastY = 0;      /* ultima goccia lasciata cadere */
+    var vX = 0, vY = 0;            /* velocita' filtrata, px/s */
+    var over = false, placed = false;
+    var idle = false, inView = false, running = false, prev = 0, resume = 0;
+    /* fase di partenza del giro libero, diversa per ogni scheda: due ritratti
+       che vagano all'unisono si vedrebbero subito come un'animazione */
+    var phase = Math.random() * 40;
+
+    function sizeSpot() {
+      var b = frame.getBoundingClientRect();
+      W = b.width; H = b.height;
+      var short = Math.min(W, H);
+
+      /* La goccia e' piccola: sono la scia e la fusione a fare l'area scoperta,
+         non il singolo disco. Con gocce grandi tornerebbe una macchia sola. */
+      DROP_R  = Math.max(14, short * 0.075);
+      HEAD_R  = DROP_R * 1.5;
+      SPACING = DROP_R * 0.85;   /* piu' fitto e le gocce si fondono in un tubo */
+
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      mask.setAttribute('x', 0);
+      mask.setAttribute('y', 0);
+      mask.setAttribute('width', W);
+      mask.setAttribute('height', H);
+      base.setAttribute('width', W);
+      base.setAttribute('height', H);
+      img.setAttribute('width',  W);
+      img.setAttribute('height', H);
+    }
+
+    function spill(x, y) {
+      var o = drops[next];
+      next = (next + 1) % POOL;
+      o.born = performance.now();
+      o.x = x; o.y = y;
+      /* raggi disuguali: gocce tutte identiche si leggono come uno stampino */
+      o.r0 = DROP_R * (0.72 + Math.random() * 0.62);
+      /* un filo della velocita' del mouse, cosi' la scia si sfilaccia in avanti
+         invece di restare una fila di bolle ferme */
+      o.vx = vX * 0.05 + (Math.random() - 0.5) * 14;
+      o.vy = vY * 0.05 + (Math.random() - 0.5) * 14;
+    }
+
+    function aim(x, y) {
+      pX = x; pY = y;
+      if (!placed) { hX = x; hY = y; lastX = x; lastY = y; placed = true; spill(x, y); }
+      var dx = pX - lastX, dy = pY - lastY;
+      if (dx * dx + dy * dy > SPACING * SPACING) { lastX = pX; lastY = pY; spill(pX, pY); }
+      start();
+    }
+
+    function move(clientX, clientY) {
+      if (idle) { idle = false; placed = false; }   /* il mouse prende il comando */
+      if (hint) hint.classList.add('off');
+      clearTimeout(resume);
+      over = true;
+      var b = frame.getBoundingClientRect();
+      aim(clientX - b.left, clientY - b.top);
+    }
+
+    /* Togliendo il mouse non si spegne tutto di colpo: la testa si chiude, le
+       gocce gia' cadute finiscono la loro vita, e dopo un attimo la scheda
+       riprende a farlo da sola. */
+    function leave() {
+      over = false;
+      clearTimeout(resume);
+      resume = setTimeout(function () { if (inView && !calm) startIdle(); }, 1600);
+      start();
+    }
+
+    function startIdle() { idle = true; over = true; placed = false; start(); }
+
+    function step(now) {
+      var dt = prev ? Math.min((now - prev) / 1000, 0.05) : 1 / 60;
+      prev = now;
+
+      /* A mouse assente il puntatore se lo inventa la pagina: una lissajous
+         lenta, con due frequenze non in rapporto semplice, cosi' il giro non si
+         ripete mai uguale e non si legge come un ciclo. Le gocce cadono
+         esattamente come sotto il mouse vero — stessa strada, stesso codice.
+         La fase di partenza dipende dalla scheda (vedi phase). */
+      if (idle) {
+        var ss = now / 1000 + phase;
+        aim(W * (0.5 + 0.30 * Math.sin(ss * 0.21) + 0.10 * Math.sin(ss * 0.57 + 2.1)),
+            H * (0.5 + 0.21 * Math.sin(ss * 0.16 + 1.1) + 0.08 * Math.sin(ss * 0.44)));
+      }
+
+      /* velocita' filtrata del puntatore: serve a sfilacciare la scia */
+      var kV = 1 - Math.exp(-9 * dt);
+      vX += ((pX - hX) * 6 - vX) * kV;
+      vY += ((pY - hY) * 6 - vY) * kV;
+
+      /* la testa insegue con ritardo: e' quel ritardo che fa sembrare la roba
+         liquida invece che agganciata al cursore */
+      var kPos = 1 - Math.exp(-9 * dt);
+      hX += (pX - hX) * kPos;
+      hY += (pY - hY) * kPos;
+      hR += ((over ? HEAD_R : 0) - hR) * (1 - Math.exp(-7 * dt));
+      head.setAttribute('cx', hX.toFixed(1));
+      head.setAttribute('cy', hY.toFixed(1));
+      head.setAttribute('r',  hR.toFixed(1));
+
+      /* le gocce cadute: si allargano in fretta, restano, si riassorbono piano */
+      var live = 0;
+      for (var i = 0; i < POOL; i++) {
+        var o = drops[i], age = (now - o.born) / LIFE;
+        var r = 0;
+        if (age >= 0 && age < 1) {
+          live++;
+          o.x += o.vx * dt; o.y += o.vy * dt;
+          o.vx -= o.vx * 1.6 * dt; o.vy -= o.vy * 1.6 * dt;
+          /* apertura rapida (primo 16%), poi una discesa lunga con la spalla
+             arrotondata: e' la forma di una goccia che si asciuga */
+          var pw = age < 0.16 ? age / 0.16 : 1 - (age - 0.16) / 0.84;
+          r = o.r0 * Math.pow(pw, 0.5);
+          o.el.setAttribute('cx', o.x.toFixed(1));
+          o.el.setAttribute('cy', o.y.toFixed(1));
+        }
+        /* si tocca il DOM solo quando il raggio cambia davvero */
+        if (Math.abs(r - o.r) > 0.15) { o.r = r; o.el.setAttribute('r', r.toFixed(1)); }
+      }
+
+      /* finito tutto — niente gocce vive, testa chiusa, nessun giro libero — si
+         stacca il loop: il filtro e' caro e non ha senso tenerlo acceso a vuoto */
+      if (!idle && !over && live === 0 && hR < 0.3) {
+        running = false; prev = 0; placed = false;
+        return;
+      }
+      requestAnimationFrame(step);
+    }
+
+    function start() { if (!running) { running = true; prev = 0; requestAnimationFrame(step); } }
+
+    /* pointerrawupdate arriva piu' spesso di pointermove, fuori dalla cadenza
+       del frame: le gocce cadono spaziate meglio lungo la strada del mouse */
+    var moveEvt = ('onpointerrawupdate' in window) ? 'pointerrawupdate' : 'pointermove';
+    frame.addEventListener(moveEvt, function (e) { move(e.clientX, e.clientY); });
+    frame.addEventListener('pointerleave', leave);
+    frame.addEventListener('pointercancel', leave);
+
+    /* da tastiera il puntatore non c'e': si apre al centro */
+    frame.addEventListener('focus', function () {
+      var b = frame.getBoundingClientRect();
+      move(b.left + b.width / 2, b.top + b.height / 2);
+    });
+    frame.addEventListener('blur', leave);
+
+    /* Il giro libero va solo mentre la scheda e' in vista: fuori schermo non lo
+       vedrebbe nessuno, e sfocatura e turbolenza si ridisegnano a ogni frame —
+       con due schede in pagina, tenerle accese entrambe a vuoto costa il doppio
+       di niente. */
+    function watch(on) {
+      inView = on;
+      if (on) { if (!calm && !frame.matches(':hover')) startIdle(); }
+      else { clearTimeout(resume); idle = false; over = false; }
+    }
+
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) { watch(es[0].isIntersecting); },
+        { threshold: 0.35 }).observe(frame);
+    } else {
+      watch(true);
+    }
+
+    /* col dito non c'e' un mouse da muovere */
+    if (window.matchMedia && window.matchMedia('(hover:none)').matches && hint) {
+      hint.textContent = 'tocca l’immagine';
+    }
+
+    fit(); sizeSpot();
+    window.addEventListener('resize', function () { fit(); sizeSpot(); });
+    if (document.fonts && document.fonts.ready)
+      document.fonts.ready.then(function () { fit(); sizeSpot(); });
+  }
+
+  var cards = document.querySelectorAll('.card');
+  for (var k = 0; k < cards.length; k++) setupCard(cards[k]);
+
+  /* la turbolenza si ridisegna a ogni frame: con reduced-motion si congela */
+  if (calm) {
+    var defs = document.querySelector('svg.defs');
+    if (defs && defs.pauseAnimations) defs.pauseAnimations();
+  }
+})();
+</script>
+
+<!-- Come si fondono le gocce, in quattro passaggi.
+
+     1. feGaussianBlur   sfoca il gruppo dei cerchi: due gocce vicine si toccano
+                         nell'alone anche se i dischi non si toccano.
+     2. feColorMatrix    ricalca l'alfa a gradino (moltiplicata per 26, poi
+                         traslata): tutto quello che era sopra una certa soglia
+                         torna pieno, il resto sparisce. Lo sfocato ridiventa un
+                         bordo netto, ma dove c'erano due aloni sovrapposti ora
+                         c'e' una forma sola, con la strozzatura in mezzo. E' il
+                         trucco delle metaball.
+     3. feTurbulence     una nuvola di rumore, con la frequenza che oscilla piano.
+     4. feDisplacementMap la usa per spostare i pixel del contorno: il profilo si
+                         increspa, e siccome la nuvola si muove le gocce ondeggiano
+                         da sole anche a mouse fermo. Sono le ondine. -->
+<svg class="defs" aria-hidden="true">
+  <filter id="goo" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="soft"/>
+    <feColorMatrix in="soft" type="matrix" result="gooey"
+      values="1 0 0 0 0
+              0 1 0 0 0
+              0 0 1 0 0
+              0 0 0 26 -11"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="9" result="noise">
+      <animate attributeName="baseFrequency" dur="16s" repeatCount="indefinite"
+               values="0.014;0.020;0.011;0.017;0.014" calcMode="spline"
+               keyTimes="0;0.25;0.5;0.75;1"
+               keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1;.45 0 .55 1"/>
+    </feTurbulence>
+    <feDisplacementMap in="gooey" in2="noise" xChannelSelector="R" yChannelSelector="G" scale="26"/>
+  </filter>
+</svg>
+
+<script>
+(function () {
+  /* Le intestazioni di sezione, montate dal font a caratteri.
+
+     Il testo che finisce nel <pre> e' testo vero: selezionandolo e incollandolo
+     altrove si ottiene il banner, non un'immagine e non una parola in
+     maiuscoletto. E' la ragione per cui non si usa un font grafico. */
+
+  var FILL = '\u2588';   /* █, la stessa faccia piena della scritta 3D */
+  var GAP  = 1;           /* colonne vuote fra una lettera e l'altra */
+
+  function build(word) {
+    var rows = ['', '', '', '', '', '', ''], i, r;
+    for (i = 0; i < word.length; i++) {
+      var g = ASCII_FONT[word[i]] || ASCII_FONT[' '];
+      for (r = 0; r < 7; r++) {
+        if (i) rows[r] += new Array(GAP + 1).join(' ');
+        rows[r] += g[r].replace(/#/g, FILL).replace(/\./g, ' ');
+      }
+    }
+    return rows;
+  }
+
+  var probeUnit = null;
+  function unitFor(el) {
+    /* larghezza di un carattere per 1px di corpo. Si misura una volta sola: il
+       mono e' lo stesso per tutti i banner */
+    if (probeUnit !== null) return probeUnit;
+    var probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-size:100px';
+    probe.style.fontFamily = getComputedStyle(el).fontFamily;
+    probe.textContent = '0'.repeat(100);
+    document.body.appendChild(probe);
+    probeUnit = probe.getBoundingClientRect().width / 100 / 100;
+    probe.remove();
+    return probeUnit;
+  }
+
+  var banners = document.querySelectorAll('.banner');
+  var made = [];
+
+  for (var b = 0; b < banners.length; b++) {
+    var el   = banners[b];
+    var rows = build(el.getAttribute('data-word'));
+    el.textContent = rows.join('\n');
+    made.push({ el: el, cols: rows[0].length });
+  }
+
+  /* Il corpo e' UNO SOLO per tutti i banner, e questa e' la correzione che conta.
+     Prima ognuno si dimensionava sul proprio contenitore — .portrait e' larga
+     940px, .contact 760 — e siccome "CHI SIAMO" e' 55 colonne e "CONTATTI" 53,
+     due intestazioni che devono leggersi come la stessa cosa venivano di due
+     misure diverse. Un titolo ha la sua taglia; e' il contenitore a doverla
+     rispettare, non il contrario.
+
+     Quindi: si parte da un corpo fisso e lo si abbassa solo se il banner PIU'
+     largo non ci sta. Non si riempie la larghezza disponibile — riempirla era
+     l'altro motivo per cui su schermo grande diventavano enormi. */
+  var MAX = 12;   /* px. A 55 colonne fa ~400px di banner: si legge come un
+                     titolo e resta chiaramente sotto alla scritta della hero. */
+
+  function fit() {
+    probeUnit = null;
+    var fs = MAX, i, m;
+    for (i = 0; i < made.length; i++) {
+      m = made[i];
+      var avail = Math.min(m.el.parentNode.clientWidth, 940);
+      fs = Math.min(fs, avail / (m.cols * unitFor(m.el)));
+    }
+    for (i = 0; i < made.length; i++) made[i].el.style.fontSize = fs + 'px';
+  }
+
+  fit();
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+</script>
+
+<script>
+(function () {
+  /* Menu e invito a scorrere. Lo scorrimento vero e proprio non e' qui: lo fa
+     scroll-behavior:smooth in CSS, e i link ci passano dentro da soli. Qui si
+     decide solo COSA si vede: quando l'invito ha finito il suo lavoro, quando
+     compare il marchio in alto, e quale voce del menu e' accesa. */
+
+  var nav  = document.getElementById('nav');
+  var cue  = document.getElementById('cue');
+  var lnks = nav.querySelectorAll('.lnk');
+
+  /* Alla prima rotella l'invito si toglie di mezzo, e il marchio in alto compare
+     appena la scritta gigante e' uscita dallo schermo: nella hero sarebbe scritto
+     due volte. Le due soglie sono diverse apposta — l'invito sparisce subito,
+     alla prima intenzione di scorrere; il marchio aspetta di servire davvero. */
+  function onScroll() {
+    var y = window.pageYOffset || document.documentElement.scrollTop;
+    cue.classList.toggle('gone', y > window.innerHeight * 0.10);
+    nav.classList.toggle('past', y > window.innerHeight * 0.72);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- l'accompagnamento dalla hero ----------
+     Chi arriva vede una schermata intera occupata da una scritta. Se scorre e si
+     ferma a meta' strada, la pagina lo accompagna giu' fino alle schede con una
+     discesa morbida: un modo di rispondere "si', c'e' dell'altro" senza che
+     debba cercarlo.
+
+     COME NON FARLO: intercettare la rotella e annullarla. Ci ho provato e non
+     funziona, per un motivo strutturale — una volta che il browser ha iniziato a
+     scorrere, i wheel successivi diventano non annullabili (cancelable false) e
+     preventDefault fallisce in silenzio. Su trackpad l'inerzia va avanti da sola
+     per un secondo e passa sopra a qualunque animazione le si metta contro: era
+     lei a portare la pagina fino ai contatti, non il codice.
+
+     COME FARLO: aspettare. Non si tocca lo scorrimento dell'utente, non si
+     annulla niente. Si guarda quando la pagina si e' FERMATA — 150ms senza un
+     solo evento di scroll, cioe' a inerzia esaurita — e solo allora, se e'
+     rimasta a mezz'aria dentro la hero, la si accompagna il resto della strada.
+     Niente listener non-passive, niente lotta col browser, e non puo' incatenarsi
+     perche' il bersaglio e' uno solo e parte solo dalla hero. */
+  var target = document.getElementById('chi-siamo');
+  var root   = document.documentElement;
+  var calm   = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var soft = false, raf = 0, idle = 0, used = false, lastY = -1;
+
+  /* Dove deve fermarsi una sezione.
+
+     Non al suo bordo: li' ci sono la riga divisoria e 7vh di respiro, quindi
+     arrivandoci si vedeva un filo, del vuoto, e il titolo ancora in basso — la
+     discesa sembrava essersi fermata a meta'. Il punto d'arrivo giusto e' il
+     TITOLO, appena sotto al menu: da li' si legge l'intestazione e subito sotto
+     comincia il contenuto.
+
+     Stessa funzione per la discesa automatica e per i link del menu, cosi' una
+     sezione atterra allo stesso modo comunque ci si arrivi. */
+  var TOP_GAP = 96;   /* aria fra il bordo alto della finestra e il titolo */
+
+  function landing(sec) {
+    var head = sec.querySelector('.banner') || sec;
+    return head.getBoundingClientRect().top - TOP_GAP;
+  }
+
+  function gap() { return target ? landing(target) : 0; }
+
+  function stop() {
+    if (!soft) return;
+    soft = false;
+    cancelAnimationFrame(raf);
+    /* si restituisce all'html il suo scroll-behavior */
+    root.style.scrollBehavior = '';
+  }
+
+  function glide() {
+    var from = window.pageYOffset || root.scrollTop;
+    var span = gap();
+    if (span < 60) return;
+    used = true;
+    soft = true;
+
+    /* Con scroll-behavior:smooth sull'html ogni scrollTo programmatica diventa a
+       sua volta smooth, e il browser inseguirebbe la nostra posizione di un
+       frame fa mentre noi ne scriviamo una nuova. Si spegne per la discesa. */
+    root.style.scrollBehavior = 'auto';
+
+    var t0 = performance.now(), DUR = 1100;
+    (function frame(now) {
+      if (!soft) return;
+      var k = Math.min((now - t0) / DUR, 1);
+      /* parte piano, prende velocita' in mezzo, si posa piano */
+      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      window.scrollTo(0, from + span * e);
+      if (k < 1) raf = requestAnimationFrame(frame); else stop();
+    })(t0);
+  }
+
+  function onScroll() {
+    var y = window.pageYOffset || root.scrollTop;
+    var down = y > lastY;
+    lastY = y;
+
+    if (y < 30) used = false;   /* tornati in cima: si riarma */
+    if (soft) return;           /* e' la nostra discesa, non un gesto */
+
+    clearTimeout(idle);
+    if (calm || used || !down) return;
+
+    /* solo se siamo ancora dentro alla hero, cioe' le schede non sono arrivate */
+    var span = gap();
+    if (span > 60 && span < window.innerHeight) idle = setTimeout(glide, 150);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* I link del menu passano dalla stessa landing(), se no il menu e la discesa
+     automatica porterebbero due punti diversi della stessa sezione. Lo
+     scorrimento resta quello del browser: scroll-behavior:smooth e' attivo
+     sull'html, quindi questa scrollTo e' gia' morbida di suo. */
+  for (var L = 0; L < lnks.length; L++) {
+    lnks[L].addEventListener('click', function (ev) {
+      var sec = document.querySelector(this.getAttribute('href'));
+      if (!sec) return;
+      ev.preventDefault();
+      stop();
+      used = true;   /* ci ha portati il menu: la discesa automatica si fa da parte */
+      window.scrollTo(0, (window.pageYOffset || root.scrollTop) + landing(sec));
+    });
+  }
+
+  /* Qualunque gesto durante la discesa la ferma: non e' un binario. E lo stesso
+     gesto azzera l'attesa, che il prossimo scroll fara' ripartire da capo. */
+  function hands() { clearTimeout(idle); stop(); }
+  window.addEventListener('wheel', hands, { passive: true });
+  window.addEventListener('touchstart', hands, { passive: true });
+  window.addEventListener('keydown', hands, { passive: true });
+
+  /* La voce accesa e' quella della sezione che sta a meta' schermo, non quella
+     che entra per prima: con il margine stretto al centro non ce n'e' mai due
+     accese insieme, e il passaggio avviene dove l'occhio sta gia' guardando. */
+  if (window.IntersectionObserver) {
+    var spy = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        var e = entries[i];
+        for (var j = 0; j < lnks.length; j++)
+          if (lnks[j].getAttribute('href') === '#' + e.target.id)
+            lnks[j].classList.toggle('on', e.isIntersecting);
+      }
+    }, { rootMargin: '-48% 0px -48% 0px' });
+
+    for (var i = 0; i < lnks.length; i++) {
+      var sec = document.querySelector(lnks[i].getAttribute('href'));
+      if (sec) spy.observe(sec);
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

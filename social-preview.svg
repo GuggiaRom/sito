@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="72%">
+      <stop offset="0" stop-color="#0b1a1e"/>
+      <stop offset=".68" stop-color="#04070a"/>
+      <stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="M0 3.5h1200" stroke="#000" stroke-opacity=".28"/>
+    </pattern>
+    <filter id="glow" x="-30%" y="-50%" width="160%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <rect x="52" y="337" width="1096" height="526" rx="20" fill="none" stroke="#2fa79f" stroke-opacity=".45"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
+    <text x="600" y="577" fill="#f2fffc" font-size="111" font-weight="700" letter-spacing="8" filter="url(#glow)">GUGGIAROM</text>
+    <text x="600" y="663" fill="#8fe4d8" font-size="26" letter-spacing="7">AI · DATA PLATFORM · BUSINESS TECHNOLOGY</text>
+    <text x="600" y="779" fill="#2fa79f" font-size="19" letter-spacing="5">GUGGIAROM.IT</text>
+  </g>
+  <rect width="1200" height="1200" fill="url(#scan)"/>
+</svg>
