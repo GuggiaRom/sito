@@ -46,8 +46,8 @@
   "email": "mailto:martino@guggiarom.it",
   "description": "AI, data platform e business technology per trasformare idee complesse in prodotti e sistemi concreti.",
   "founder": [
-    {"@type": "Person", "name": "Andrea Romeo", "sameAs": "https://www.linkedin.com/in/andrea-romeo-aa4b17223/"},
-    {"@type": "Person", "name": "Martino Guggiari", "sameAs": "https://www.linkedin.com/in/martinoguggiari/"}
+    {"@type": "Person", "name": "Andrea Romeo", "email": "mailto:andrea@guggiarom.it", "sameAs": "https://www.linkedin.com/in/andrea-romeo-aa4b17223/"},
+    {"@type": "Person", "name": "Martino Guggiari", "email": "mailto:martino@guggiarom.it", "sameAs": "https://www.linkedin.com/in/martinoguggiari/"}
   ],
   "sameAs": [
     "https://www.linkedin.com/in/andrea-romeo-aa4b17223/",
@@ -439,6 +439,8 @@
   /* nei contatti tutto e' centrato: le righe del banner sono tutte lunghe
      uguali, quindi text-align:center centra il blocco senza scalinature */
   .contact .banner{margin-bottom:26px}
+  /* una riga per indirizzo, centrate: affiancate a 40px non ci stanno */
+  .contact .mails{display:flex;flex-direction:column;align-items:center;gap:10px}
   .contact .mail{
     display:inline-block;
     font-size:clamp(20px, 4.4vw, 40px);
@@ -509,7 +511,7 @@
   </div>
   <div class="col-txt">
    <h2 class="name">Andrea Romeo</h2>
-   <p class="role">AI Platform Engineer &amp; Data Platform</p>
+   <p class="role">AI &amp; Data Platform Engineer</p>
    <a class="linkedin" href="https://www.linkedin.com/in/andrea-romeo-aa4b17223/" target="_blank" rel="noopener noreferrer" aria-label="Profilo LinkedIn di Andrea Romeo">LinkedIn&nbsp;&nearr;</a>
   </div>
  </article>
@@ -532,7 +534,10 @@
 <section class="contact" id="contatti">
   <div class="rule"></div>
   <pre class="banner" data-word="CONTATTI" role="heading" aria-level="2" aria-label="Contatti"></pre>
-  <a class="mail" href="mailto:martino@guggiarom.it">martino@guggiarom.it</a>
+  <div class="mails">
+    <a class="mail" href="mailto:andrea@guggiarom.it">andrea@guggiarom.it</a>
+    <a class="mail" href="mailto:martino@guggiarom.it">martino@guggiarom.it</a>
+  </div>
   <p class="note">Raccontaci il progetto in due righe. Rispondiamo entro un paio di giorni.</p>
   <footer>
     <span>&copy; <span id="year">2026</span> Guggiarom</span>
