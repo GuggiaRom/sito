@@ -465,7 +465,7 @@
   }
   .logos{
     max-width:940px;margin:0 auto;padding:0;list-style:none;
-    display:grid;grid-template-columns:repeat(4, 1fr);gap:14px;
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;
   }
   .logos li{display:flex}
   .tile{
@@ -502,12 +502,17 @@
   .tile:hover .scan,.tile:focus-visible .scan{animation:sweep .9s cubic-bezier(.4,0,.2,1) 1}
   @keyframes sweep{to{transform:translateY(260%)}}
 
+  /* il logo sta al centro dello spazio sopra al dominio, e il dominio ha
+     sempre la sua riga (vuota se non c'e' link): cosi' i loghi cadono tutti
+     alla stessa altezza, che la casella abbia un link o no */
   .tile .mark{
-    height:58px;width:100%;
+    flex:1 1 auto;min-height:64px;width:100%;
     display:flex;align-items:center;justify-content:center;
   }
+  /* ogni logo ha la sua altezza (--lh): a parita' di altezza un marchio
+     tondo sembra piccolo e uno lungo e basso enorme. Si pareggia a occhio. */
   .tile img{
-    max-width:78%;max-height:52px;object-fit:contain;
+    max-width:78%;height:var(--lh, 52px);width:auto;object-fit:contain;
     /* qualunque colore abbia, diventa fosforo */
     filter:brightness(0) invert(88%) sepia(35%) saturate(620%) hue-rotate(115deg)
            drop-shadow(0 0 6px rgba(37,240,216,.45));
@@ -530,6 +535,24 @@
        0.03em 0 rgba(0,220,255,.3),
        0 0 .4em rgba(37,240,216,.42);
   }
+  /* Polis System non ha un logo disegnato: il marchio e' il nome, scritto
+     nel sans di sistema in grassetto stretto come sul loro sito. Prende lo
+     stesso fosforo spento dei loghi e si accende allo stesso modo. */
+  .tile.textmark .word{
+    display:block;
+    font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size:24px;font-weight:700;letter-spacing:-.025em;
+    color:#9df0e2;opacity:.85;
+    text-shadow:0 0 4px rgba(37,240,216,.35);
+    transition:opacity .25s, color .25s, text-shadow .25s;
+  }
+  .tile.textmark:hover .word,.tile.textmark:focus-visible .word{
+    opacity:1;color:var(--face);
+    text-shadow:
+      -1px 0 rgba(255,42,140,.45),
+       1px 0 rgba(0,220,255,.4),
+       0 0 8px rgba(37,240,216,.6);
+  }
   .tile.nologo img{display:none}
   .tile.nologo .word{display:block}
   .tile .dom{
@@ -537,8 +560,10 @@
     color:var(--dim);opacity:.8;
     text-shadow:0 0 .5em rgba(37,240,216,.35);
     transition:color .2s, opacity .2s;
+    min-height:1.2em;
   }
   .tile .dom::after{content:"\00a0\2197"}
+  .tile .dom.empty::after{content:none}
   .tile:hover .dom,.tile:focus-visible .dom{color:var(--lit);opacity:1}
 
   /* la casella aperta: tratteggiata, senza logo, col cursore che lampeggia */
@@ -553,14 +578,16 @@
   }
   .tile.more .txt::after{
     content:"\2588";margin-left:.2em;color:var(--lit);
-    animation:blink 1.1s steps(1) infinite;
+    animation:blinkCursor 1.1s steps(1) infinite;
   }
-  @keyframes blink{50%{opacity:0}}
 
-  @media (max-width:860px){.logos{grid-template-columns:repeat(2, 1fr)}}
-  @media (max-width:420px){
-    .logos{grid-template-columns:1fr}
-    .tile{min-height:124px;gap:14px;padding:20px 16px 16px}
+  @media (max-width:760px){.logos{grid-template-columns:repeat(2, 1fr);gap:10px}}
+  @media (max-width:480px){
+    .tile{min-height:118px;gap:12px;padding:18px 10px 14px}
+    .tile .mark{min-height:48px}
+    .tile img{height:calc(var(--lh, 52px) * .68);max-width:86%}
+    .tile .dom{font-size:8.5px;letter-spacing:.14em}
+    .tile.textmark .word{font-size:19px}
   }
   @media (prefers-reduced-motion: reduce){
     .tile:hover .scan,.tile:focus-visible .scan{animation:none}
@@ -701,17 +728,27 @@
  <ul class="logos">
   <li><a class="tile" href="https://www.pcabroker.com/" target="_blank" rel="noopener noreferrer" aria-label="PCA Broker, pcabroker.com">
     <span class="scan"></span>
-    <span class="mark"><img src="clienti/pca-broker.svg" alt="PCA Broker" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">PCA Broker</span></span>
+    <span class="mark"><img style="--lh:62px" src="clienti/pca-broker.png" alt="PCA Broker" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">PCA Broker</span></span>
     <span class="dom">pcabroker.com</span>
   </a></li>
-  <li><a class="tile" href="https://www.ggrs.it/" target="_blank" rel="noopener noreferrer" aria-label="Gruppo Gavio Solutions, ggrs.it">
+  <li><a class="tile" href="https://www.ggrs.it/" target="_blank" rel="noopener noreferrer" aria-label="Gavio Global Risk Solutions, ggrs.it">
     <span class="scan"></span>
-    <span class="mark"><img src="clienti/gruppo-gavio.svg" alt="Gruppo Gavio Solutions" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Gruppo Gavio Solutions</span></span>
+    <span class="mark"><img style="--lh:56px" src="clienti/ggrs.png" alt="Gavio Global Risk Solutions" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Gavio Global Risk Solutions</span></span>
     <span class="dom">ggrs.it</span>
   </a></li>
-  <li><a class="tile" href="https://polis-system.com/" target="_blank" rel="noopener noreferrer" aria-label="Polis System, polis-system.com">
+  <li><div class="tile">
     <span class="scan"></span>
-    <span class="mark"><img src="clienti/polis-system.svg" alt="Polis System" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Polis System</span></span>
+    <span class="mark"><img style="--lh:58px" src="clienti/augustas.png" alt="Augustas Risk Services" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Augustas Risk Services</span></span>
+    <span class="dom empty" aria-hidden="true"></span>
+  </div></li>
+  <li><div class="tile">
+    <span class="scan"></span>
+    <span class="mark"><img style="--lh:26px" src="clienti/neulabs.png" alt="Neulabs" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Neulabs</span></span>
+    <span class="dom empty" aria-hidden="true"></span>
+  </div></li>
+  <li><a class="tile textmark" href="https://polis-system.com/" target="_blank" rel="noopener noreferrer" aria-label="Polis System, polis-system.com">
+    <span class="scan"></span>
+    <span class="mark"><span class="word">Polis System</span></span>
     <span class="dom">polis-system.com</span>
   </a></li>
   <li><a class="tile more" href="#contatti">
