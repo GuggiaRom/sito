@@ -502,9 +502,8 @@
   .tile:hover .scan,.tile:focus-visible .scan{animation:sweep .9s cubic-bezier(.4,0,.2,1) 1}
   @keyframes sweep{to{transform:translateY(260%)}}
 
-  /* il logo sta al centro dello spazio sopra al dominio, e il dominio ha
-     sempre la sua riga (vuota se non c'e' link): cosi' i loghi cadono tutti
-     alla stessa altezza, che la casella abbia un link o no */
+  /* il logo sta al centro dello spazio sopra al dominio: cosi' i loghi
+     cadono tutti alla stessa altezza, qualunque sia la loro forma */
   .tile .mark{
     flex:1 1 auto;min-height:64px;width:100%;
     display:flex;align-items:center;justify-content:center;
@@ -563,7 +562,6 @@
     min-height:1.2em;
   }
   .tile .dom::after{content:"\00a0\2197"}
-  .tile .dom.empty::after{content:none}
   .tile:hover .dom,.tile:focus-visible .dom{color:var(--lit);opacity:1}
 
   /* la casella aperta: tratteggiata, senza logo, col cursore che lampeggia */
@@ -736,16 +734,16 @@
     <span class="mark"><img style="--lh:56px" src="clienti/ggrs.png" alt="Gavio Global Risk Solutions" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Gavio Global Risk Solutions</span></span>
     <span class="dom">ggrs.it</span>
   </a></li>
-  <li><div class="tile">
+  <li><a class="tile" href="https://www.augustasrisk.com/" target="_blank" rel="noopener noreferrer" aria-label="Augustas Risk Services, augustasrisk.com">
     <span class="scan"></span>
     <span class="mark"><img style="--lh:58px" src="clienti/augustas.png" alt="Augustas Risk Services" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Augustas Risk Services</span></span>
-    <span class="dom empty" aria-hidden="true"></span>
-  </div></li>
-  <li><div class="tile">
+    <span class="dom">augustasrisk.com</span>
+  </a></li>
+  <li><a class="tile" href="https://neulabs.com/it" target="_blank" rel="noopener noreferrer" aria-label="Neulabs, neulabs.com">
     <span class="scan"></span>
     <span class="mark"><img style="--lh:26px" src="clienti/neulabs.png" alt="Neulabs" loading="lazy" onerror="this.closest('.tile').classList.add('nologo')"><span class="word">Neulabs</span></span>
-    <span class="dom empty" aria-hidden="true"></span>
-  </div></li>
+    <span class="dom">neulabs.com</span>
+  </a></li>
   <li><a class="tile textmark" href="https://polis-system.com/" target="_blank" rel="noopener noreferrer" aria-label="Polis System, polis-system.com">
     <span class="scan"></span>
     <span class="mark"><span class="word">Polis System</span></span>
