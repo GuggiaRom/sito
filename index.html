@@ -91,6 +91,10 @@
 
   .hero{
     height:100vh;
+    /* su Safari iOS/Chrome Android 100vh conta anche la barra indirizzi:
+       100svh e' l'altezza vera visibile. Doppia dichiarazione: dove svh non
+       e' supportata resta il vh, dove lo e' vince perche' viene dopo. */
+    height:100svh;
     display:flex;align-items:center;justify-content:center;
     position:relative;
   }
@@ -138,6 +142,10 @@
     transition:color .2s, border-color .2s;
   }
   .nav .lnk:hover{color:var(--lit)}
+  /* il cursore da prompt: un trattino che lampeggia dopo la voce, solo mentre
+     ci passi sopra — e' lo stesso gesto di un terminale che aspetta un comando */
+  .nav .lnk:hover::after{content:"_";margin-left:.15em;animation:blinkCursor 1s steps(1) infinite}
+  @keyframes blinkCursor{50%{opacity:0}}
   /* la voce della sezione che si sta guardando si accende da sola */
   .nav .lnk.on{color:var(--face);border-bottom-color:rgba(87,226,207,.45)}
 
@@ -216,6 +224,23 @@
 
   /* ---------- vetro del monitor ---------- */
   .crt{position:fixed;inset:0;pointer-events:none;z-index:3}
+
+  /* Accensione: il tubo si "apre" da una riga sottile a schermo pieno e poi
+     si spegne nel contenuto vero, come un monitor CRT che si accende.
+     Sopra a tutto il resto (z-index 4) e per un attimo solo: dopo l'animazione
+     resta trasparente e non intercetta piu' nulla (era gia' pointer-events:none). */
+  .crt.boot{
+    z-index:4;
+    background:#eafffb;
+    transform-origin:50% 50%;
+    animation:boot .7s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes boot{
+    0%   {transform:scaleY(.004);opacity:1}
+    55%  {transform:scaleY(1);opacity:.9}
+    100% {transform:scaleY(1);opacity:0}
+  }
+  @media (prefers-reduced-motion: reduce){.crt.boot{display:none}}
 
   /* scanline fisse */
   .crt.lines{
@@ -332,6 +357,8 @@
   .col-txt .linkedin:focus-visible{
     color:var(--face);border-bottom-color:var(--face);
   }
+  .col-txt .linkedin:hover::after,
+  .col-txt .linkedin:focus-visible::after{content:"_";margin-left:.15em;animation:blinkCursor 1s steps(1) infinite}
 
   /* stretto: le due colonne si impilano e tutto torna centrato */
   @media (max-width:760px){
@@ -347,6 +374,9 @@
     position:relative;
     cursor:crosshair;   /* stesso mirino del resto della pagina: e' una torcia, non un bottone */
     -webkit-tap-highlight-color:transparent;
+    /* senza questo, trascinare il dito sulla foto scorre la pagina invece di
+       muovere la torcia: il browser vince sempre sul gesto di default */
+    touch-action:none;
   }
 
   .card .art{
@@ -372,8 +402,9 @@
      zona aperta si spezza in chiazze staccate.
 
      Tutto sta in un SVG, non in CSS: le gocce sono <circle> dentro una <mask>,
-     e la maschera si applica a un <image>. Il bianco mantiene visibile la foto,
-     il nero delle gocce la apre sull'ASCII. E' l'unico modo per farle FONDERE fra
+     e la maschera si applica a un <image>. La base e' nera (foto nascosta, si
+     vede l'ASCII sotto), le gocce sono bianche e la aprono: la torcia scopre
+     il volto vero, non il contrario. E' l'unico modo per farle FONDERE fra
      loro — il filtro sfoca il gruppo e poi ricalca l'alfa a gradino, cosi' due
      cerchi vicini diventano una forma sola con la strozzatura in mezzo. Con dei
      div in CSS ogni goccia resterebbe un disco separato. */
@@ -456,6 +487,7 @@
     transition:border-color .2s, letter-spacing .2s;
   }
   .contact .mail:hover{border-bottom-color:var(--face);letter-spacing:.012em}
+  .contact .mail:hover::after{content:"_";margin-left:.1em;animation:blinkCursor 1s steps(1) infinite}
   .contact .note{
     margin:34px auto 0;max-width:44ch;
     font-size:13px;line-height:1.75;color:var(--lit);opacity:.75;
@@ -476,6 +508,10 @@
   @media (prefers-reduced-motion: reduce){
     #screen{animation:none}
     .cue .rail::after{animation:none;opacity:.7}
+    .nav .lnk:hover::after,
+    .col-txt .linkedin:hover::after,
+    .col-txt .linkedin:focus-visible::after,
+    .contact .mail:hover::after{animation:none}
   }
 </style>
 </head>
@@ -548,6 +584,7 @@
 <div class="crt mask"></div>
 <div class="crt lines"></div>
 <div class="crt glass"></div>
+<div class="crt boot"></div>
 
 <script>
 /* ===================================================================
@@ -1021,9 +1058,9 @@ var ASCII_FONT = {
     mask.setAttribute('maskUnits', 'userSpaceOnUse');
     base.setAttribute('x', 0);
     base.setAttribute('y', 0);
-    base.setAttribute('fill', '#fff');
+    base.setAttribute('fill', '#000');
     group.setAttribute('filter', 'url(#goo)');
-    group.setAttribute('fill', '#000');
+    group.setAttribute('fill', '#fff');
     img.setAttribute('href', card.getAttribute('data-photo'));
     img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
     img.setAttribute('mask', 'url(#' + id + ')');
@@ -1252,7 +1289,7 @@ var ASCII_FONT = {
 
     /* col dito non c'e' un mouse da muovere */
     if (window.matchMedia && window.matchMedia('(hover:none)').matches && hint) {
-      hint.textContent = 'tocca l’immagine';
+      hint.textContent = 'muovi il dito sull’immagine';
     }
 
     fit(); sizeSpot();
